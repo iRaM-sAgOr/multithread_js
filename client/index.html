@@ -5,6 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web Worker API</title>
+    <style>
+        .spinner {
+            border: 3px solid rgba(212, 10, 10, 0.1);
+            border-left-color: #333333;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            animation: spin 2s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -12,6 +29,7 @@
     <button id="total">Number of Primes = </button>
     <input type="number" id="output_id"></input>
     </br>
+    <div class="spinner"></div>
     <button id="bg">Change BG Color</button>
 
     <script src="./script.js"></script>
