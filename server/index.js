@@ -1,5 +1,5 @@
 import express from 'express';
-
+import {Worker} from "worker_threads"
 const app = express();
 
 app.get('/non-blocking', (req, res) => {
@@ -7,15 +7,27 @@ app.get('/non-blocking', (req, res) => {
     res.status(200).send({ success: true, value: 100 })
 })
 
-app.get('/blocking', (req, res) => {
-    let result = 0;
-    for (let i = 0; i <= 10000000000; i++) {
-        result += i;
-    }
-    res.status(200).send({
-        success: true,
-        value: result
+app.get('/blocking/:number', (req, res) => {
+    const number = parseInt(req.params.number);
+    const worker = new Worker('./worker.js', {
+        workerData: number
     })
+    worker.on('message', (result) => {
+        res.status(200).send({
+            success: true,
+            value: result
+        })
+    });
+    worker.on('error', err => {
+        res.status(500).send(`Worker thread error: ${err.message}`);
+    });
+
+    worker.on('exit', code => {
+        if (code !== 0) {
+            res.status(500).send(`Worker thread stopped with exit code ${code}`);
+        }
+    });
+
 })
 
 
